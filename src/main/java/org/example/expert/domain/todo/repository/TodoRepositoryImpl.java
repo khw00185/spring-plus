@@ -1,5 +1,6 @@
 package org.example.expert.domain.todo.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
@@ -13,10 +14,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.expert.domain.todo.entity.QTodo.todo;
+import static org.example.expert.domain.user.entity.QUser.user;
+
 @Repository
 @RequiredArgsConstructor
 public class TodoRepositoryImpl implements TodoRepositoryCustom{
     private final EntityManager entityManager;
+    private final JPAQueryFactory queryFactory;
+    private final JPAQueryFactory jpaQueryFactory;
+
     @Override
     public Page<Todo> findAllWithFilterOrderByModifiedAtDesc(Pageable pageable, String weather, LocalDate startDate, LocalDate endDate){
         StringBuilder jpql = new StringBuilder("SELECT t FROM Todo t LEFT JOIN FETCH t.user u WHERE 1=1");
@@ -84,6 +91,13 @@ public class TodoRepositoryImpl implements TodoRepositoryCustom{
         long total = countQuery.getSingleResult();
 
         return new PageImpl<>(todos, pageable, total);
+    }
 
+    @Override
+    public Todo findByIdWithUser(Long todoId){
+        return jpaQueryFactory.selectFrom(todo)
+                .leftJoin(todo.user, user).fetchJoin()
+                .where(todo.id.eq(todoId))
+                .fetchOne();
     }
 }

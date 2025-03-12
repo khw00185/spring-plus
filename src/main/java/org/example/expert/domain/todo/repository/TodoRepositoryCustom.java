@@ -8,4 +8,7 @@ import java.time.LocalDate;
 
 public interface TodoRepositoryCustom {
     Page<Todo> findAllWithFilterOrderByModifiedAtDesc(Pageable pageable, String weather, LocalDate startDate, LocalDate endDate);
+
+    Todo findByIdWithUser (Long todoId);
+
 }
