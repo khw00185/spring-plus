@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
@@ -53,7 +55,10 @@ public class TodoService {
     public Page<TodoResponse> getTodos(int page, int size, String weather, LocalDate startDate, LocalDate endDate) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<Todo> todos = todoRepository.findAllWithFilterOrderByModifiedAtDesc(pageable, weather, startDate, endDate);
+        LocalDateTime startDateTime = (startDate != null) ? startDate.atStartOfDay() : null;
+        LocalDateTime endDateTime = (endDate != null) ? endDate.atTime(LocalTime.MAX) : null;
+
+        Page<Todo> todos = todoRepository.findAllWithFilterOrderByModifiedAtDesc(pageable, weather, startDateTime, endDateTime);
 
         return todos.map(todo -> new TodoResponse(
                 todo.getId(),
@@ -69,8 +74,9 @@ public class TodoService {
     public TodoResponse getTodo(long todoId) {
         Todo todo = Optional.ofNullable(todoRepository.findByIdWithUser(todoId))
                 .orElseThrow(()-> new InvalidRequestException("Todo not found"));
-
+        System.out.println("todo@@@@@@@@@@@@@@@@: "+todo);
         User user = todo.getUser();
+        System.out.println("userId@@@@@@@@@@@@@@@@: "+user.getId());
 
         return new TodoResponse(
                 todo.getId(),

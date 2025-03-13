@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +26,13 @@ public class TodoRepositoryImpl implements TodoRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Todo> findAllWithFilterOrderByModifiedAtDesc(Pageable pageable, String weather, LocalDate startDate, LocalDate endDate){
+    public Page<Todo> findAllWithFilterOrderByModifiedAtDesc(Pageable pageable, String weather, LocalDateTime startDate, LocalDateTime endDate){
         StringBuilder jpql = new StringBuilder("SELECT t FROM Todo t LEFT JOIN FETCH t.user u WHERE 1=1");
 
         List<Object> params = new ArrayList<>();
 
         if(weather != null) {
-            jpql.append(" AND t.weather = :weather ");
+            jpql.append(" AND t.weather LIKE CONCAT('%', :weather, '%') ");
             params.add(weather);
         }
         if(startDate != null) {

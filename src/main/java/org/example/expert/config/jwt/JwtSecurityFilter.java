@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.user.enums.UserRole;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -25,33 +26,39 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtSecurityFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-
+        System.out.println("1");
         String requestURI = request.getRequestURI();
 
-        if (PATH_MATCHER.match("/auth", requestURI)) {
+        if (requestURI.startsWith("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
-
+        System.out.println("2");
 
         String authorizationHeader = request.getHeader("Authorization");
 
-        if(authorizationHeader != null && !authorizationHeader.startsWith("Bearer ")) {
+        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String jwt = jwtUtil.substringToken(authorizationHeader);
+            System.out.println("3");
+
             try{
                 Claims claims = jwtUtil.extractClaims(jwt);
+
+                System.out.println("4");
 
                 if(SecurityContextHolder.getContext().getAuthentication() == null){
                     Long userId = Long.valueOf(claims.getSubject());
                     String email = claims.get("email", String.class);
-                    UserRole role = claims.get("role", UserRole.class);
+                    String roleStr = claims.get("userRole", String.class);
                     String nickname = claims.get("nickname", String.class);
+                    System.out.println("5");
+
+                    UserRole role = UserRole.of(roleStr);
 
                     AuthUser authUser = new AuthUser(userId, email, role, nickname);
 
