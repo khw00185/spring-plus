@@ -31,32 +31,26 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("1");
         String requestURI = request.getRequestURI();
 
         if (requestURI.startsWith("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
-        System.out.println("2");
 
         String authorizationHeader = request.getHeader("Authorization");
 
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String jwt = jwtUtil.substringToken(authorizationHeader);
-            System.out.println("3");
 
             try{
                 Claims claims = jwtUtil.extractClaims(jwt);
-
-                System.out.println("4");
 
                 if(SecurityContextHolder.getContext().getAuthentication() == null){
                     Long userId = Long.valueOf(claims.getSubject());
                     String email = claims.get("email", String.class);
                     String roleStr = claims.get("userRole", String.class);
                     String nickname = claims.get("nickname", String.class);
-                    System.out.println("5");
 
                     UserRole role = UserRole.of(roleStr);
 
