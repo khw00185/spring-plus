@@ -15,12 +15,9 @@ import java.util.List;
 
 @SpringBootTest
 public class UserServiceTest {
-
     @Autowired
     private UserRepository userRepository;
-
     private static final int BATCH_SIZE = 1000;
-
     @Test
     void 유저_100만개_생성(){
         List<User> users = new ArrayList<>();
@@ -38,5 +35,4 @@ public class UserServiceTest {
             }
         }
     }
-
 }

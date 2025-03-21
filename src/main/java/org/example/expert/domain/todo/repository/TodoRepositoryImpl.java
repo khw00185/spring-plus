@@ -107,30 +107,7 @@ public class TodoRepositoryImpl implements TodoRepositoryCustom{
                 .where(todo.id.eq(todoId))
                 .fetchOne();
     }
-/*
-    public Page<TodoSearchResponseDto> searchTodo(Pageable pageable, String title, String nickname, LocalDateTime startDate, LocalDateTime endDate) {
-        QTodo todo = QTodo.todo;
-        QManager manager = QManager.manager;
-        QUser user = QUser.user;
-        QComment comment = QComment.comment;
 
-        List<TodoSearchResponseDto> test = jpaQueryFactory
-                .select(
-                        todo.id,
-                        todo.title,
-                        manager.countDistinct(),
-                        comment.countDistinct()
-                )
-                .from(todo)
-                .leftJoin(manager).on(manager.todo.eq(todo))
-                .leftJoin(manager).on(manager.user.eq(user))
-                .leftJoin(comment)
-                .where(
-                        (title != null) ? todo.title.containsIgnoreCase(title),
-                        (nickname != null) ? user.nickname.containsIgnoreCase(nickname)
-                )
-    }
-*/
 
     @Override
     public Page<TodoSearchResponseDto> searchTodo(Pageable pageable, String title, String nickname, LocalDateTime startDate, LocalDateTime endDate){
