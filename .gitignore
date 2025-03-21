@@ -39,3 +39,5 @@ out/
 ### properties ###
 *.properties
 src/main/resources/*.yml
+
+.DS_Store
