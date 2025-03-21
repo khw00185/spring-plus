@@ -41,10 +41,13 @@
 - 여러가지 아이디어로 유저 검색 속도를 줄여주세요.
     - 조회 속도를 개선할 수 있는 여러 방법을 고민하고, 각각의 방법들을 실행해보세요.
     - `README.md` 에 각 방법별 실행 결과를 비교할 수 있도록 최초 조회 속도와 개선 과정 별 조회 속도를 확인할 수 있는 표 혹은 이미지를 첨부해주세요.
+      
 개선 전
+
 ![image](https://github.com/user-attachments/assets/718ac954-e6a7-4d29-b87f-2c92211c2a81)
 
 개선 후 (Covering Index + Dto + index 크기 경량화)
+
 ![image](https://github.com/user-attachments/assets/e065f851-0c4b-40a2-9849-442394710145)
 
 
